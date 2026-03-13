@@ -6,11 +6,12 @@ let package = Package(
   platforms: [.iOS(.v10), .tvOS(.v10)],
   products: [
       .library(
-          name: "iOSSnapshotTestCase",  // ← Must match what Xcode expects
+          name: "iOSSnapshotTestCase",
           type: .dynamic,
           targets: ["iOSSnapshotTestCase", "iOSSnapshotTestCaseCore"]
       ),
   ],
+  dependencies: [],
   targets: [
       .target(
           name: "iOSSnapshotTestCase",
@@ -20,10 +21,17 @@ let package = Package(
       ),
       .target(
           name: "iOSSnapshotTestCaseCore",
-          path: "FBSnapshotTestCase",
-          exclude: ["FBSnapshotTestCase-Info.plist", "SwiftSupport.swift"],
-          publicHeadersPath: ".",
-          cSettings: [.headerSearchPath("Categories")],
+          dependencies: [],
+          path: ".",                                    // ← Repository root
+          sources: ["FBSnapshotTestCase"],              // ← Source directory
+          exclude: [
+              "FBSnapshotTestCase/FBSnapshotTestCase-Info.plist",
+              "FBSnapshotTestCase/SwiftSupport.swift"
+          ],
+          publicHeadersPath: "FBSnapshotTestCase",      // ← Preserves FBSnapshotTestCase/ prefix!
+          cSettings: [
+              .headerSearchPath("FBSnapshotTestCase/Categories")
+          ],
           linkerSettings: [
               .linkedFramework("XCTest"),
               .linkedFramework("UIKit"),
